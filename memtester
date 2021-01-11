@@ -1,0 +1,30 @@
+memtester4.3.0
+
+ref: https://www.programmersought.com/article/5100713011/
+
+Method test_random_value
+Function name:int test_random_value(ulv *bufa, ulv *bufb, size_t count)
+
+Open two Buffer areas, and then write random values ​​at the same time. After writing count, use compare_regions(bufa, bufb, count) function to compare and verify.
+
+Purpose (principle)
+The purpose is to test the data bus, and whether a certain data pattern will cause the cell to be unreadable, similar to the Monkey test in the software test;
+
+There are a few points to note:
+
+The open source version here does not have the underlying acceleration optimization. Write data to the memory address one by one. Every time you write one, 
+you must fflush some operations, so that the data does not accumulate in the stdout buffer and will not be written to the DRAM immediately. Therefore, when 
+we optimize the underlying layer, Consider the impact of the cache;
+
+The above comparison function is a value comparison. If the bottom layer is not optimized, the time cost is basically four times that of the neon acceleration;
+
+
+Method test_walkbits1_comparison/test_walkbits0_comparison
+Function name:nt test_walkbits1_comparison(bufa, bufb, count);
+
+First set an initial value (taking walk1 as an example) to 0x00000001, then shift one bit to the left and then write to the next address, and so on.
+
+Purpose (principle)
+This test is intended to uncover data or address bus problems both internal to the memory device as well as external.
+
+It also covers testing adjacent coupling defects.
